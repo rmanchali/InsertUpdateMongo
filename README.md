@@ -1,2 +1,2 @@
 # InsertUpdateMongo
-Insert and update mongo records
+Insert and update mongo records using mongoose connection string

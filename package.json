@@ -21,6 +21,8 @@
   "author": "Ranjan Manchali <ranjanmanchali@hotmail.com>",
   "license": "ISC",
   "dependencies": {
+    "connect": "*",
+    "mongoose": "*"
     
   }
 }
