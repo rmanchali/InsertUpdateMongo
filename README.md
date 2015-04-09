@@ -1,2 +1,4 @@
 # InsertUpdateMongo
-Insert and update mongo records using mongoose connection string
+Insert Update delete mongo records using mongoose 
+
+use arguments to determine acrions and set key fields.

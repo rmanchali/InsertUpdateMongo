@@ -1,7 +1,7 @@
 
 var mongoose =require ("mongoose");
-mongoose.connect('mongodb://mongodb01-az3.development.tescloud.com:27017/registration',
-                 {user: 'registration_user', pass: 'SOh3TbYhxuLiW8ypJPxmt1oOfL'},
+mongoose.connect('<connectionstring>',
+                 {user: '<username>', pass: 'password'},
                  function(err) {if (err) { console.log('Connection Error ************: ',err);} });
 
 //('mongodb://userAdmin:password@mongodb01-az1.development.tescloud.com:27017/registration');  
@@ -10,12 +10,14 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {
 	var args = process.argv[2];
+	var username = process.argv[3] || 'testranjan';
+	
 
 	var identitySchema = mongoose.Schema({
 	    firstName: String,
 	    lastName: String,
 	    identityId: String,
-	    identification: { email: {original:String, index: String}, username: {original:String, index: String} }
+	    identification: { email: {original:String, indexed: String}, username: {original:String, indexed: String} }
 	});
 
 	var identityModel = mongoose.model('identities', identitySchema);
@@ -25,19 +27,20 @@ db.once('open', function (callback) {
 	{
 		console.log('*******Inserting documents******');
 
-		var newDoc = new identityModel({ firstName: 'First name',lastName: 'Lastname'
-										,identityId:'hjsadjasj-dsajdksak-kl', 
-										identification: { email: {original:'origemil', index: 'indexemail'}
-										,username: {original:'testranjan', index: 'testranjan'}} });
+		var newDoc = new identityModel({ firstName: username + 'First name',lastName: username + 'Lastname'
+										,identityId: username + 'hjsadjasj-dsa-000-jdksak-kl', 
+										identification: { email: {original: username + '@origemil', indexed: username + '@origemil'}
+										,username: {original: username, indexed: username}} });
 
 		newDoc.save(callback);
 	}
 	else if(args=='update')
 	{
+		var args2 = process.argv[3];
 		console.log('*******Updating documents******');
 		//db.identities.find({'identification.email.original':'hassy@yld.io'})
-
-		var query = { 'identification.username.original':'testranjan' }
+		//	{$or : [{'identification.username.original':'testranjan'},{'identification.username.original':'testranjan'}]}
+		var query = { 'identification.username.original': username }
 		  , update = { $inc: { visits: 1 }}
 		  , options = { multi: true };
 
@@ -47,7 +50,7 @@ db.once('open', function (callback) {
 	else if(args=='delete')
 	{
 		console.log('*******Deleting documents******');
-		identityModel.remove({'identification.username.original':'testranjan'}, callback)
+		identityModel.remove({'identification.username.original': username}, callback)
 	}
 	else
 	{
@@ -56,10 +59,12 @@ db.once('open', function (callback) {
 
 	function callback (err, numAffected) {
 	  if (err) {
-	      console.log('Errrror....Try Again');
+	      console.log('Errrror....Try Again',err);
+	      process.exit(1);
 	      return;
 	  }
 	  console.log('Number of rows affected=', numAffected);
+	  process.exit(code=0);
 	}
 });
 
