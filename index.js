@@ -4,7 +4,6 @@ mongoose.connect('<connectionstring>',
                  {user: '<username>', pass: 'password'},
                  function(err) {if (err) { console.log('Connection Error ************: ',err);} });
 
-//('mongodb://userAdmin:password@mongodb01-az1.development.tescloud.com:27017/registration');  
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
