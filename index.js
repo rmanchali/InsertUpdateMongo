@@ -1,9 +1,11 @@
 
 var mongoose =require ("mongoose");
-mongoose.connect('<connectionstring>',
-                 {user: '<username>', pass: 'password'},
+mongoose.connect("mongodb://<connection>",
+                 {user: "<user>", pass: "<password>"},
                  function(err) {if (err) { console.log('Connection Error ************: ',err);} });
 
+
+//('mongodb://userAdmin:password@mongodb01-az1.development.tescloud.com:27017/registration');  
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -18,6 +20,7 @@ db.once('open', function (callback) {
 	    identityId: String,
 	    identification: { email: {original:String, indexed: String}, username: {original:String, indexed: String} }
 	});
+
 
 	var identityModel = mongoose.model('identities', identitySchema);
 
@@ -51,6 +54,17 @@ db.once('open', function (callback) {
 		console.log('*******Deleting documents******');
 		identityModel.remove({'identification.username.original': username}, callback)
 	}
+	else if(args=='view')
+	{
+		
+		identityModel.findOne({ 'identification.username.original': username}, 'firstName lastName identification.email.original', function (err, identityModel) {
+  		if (err) return callback;
+  		
+  		console.log('%s %s %s.', identityModel.firstName, identityModel.lastName, identityModel.identification.email.original) // Space Ghost is a talk show host.
+	})
+		
+	}
+
 	else
 	{
 		console.log('*******INVALID argument******');
